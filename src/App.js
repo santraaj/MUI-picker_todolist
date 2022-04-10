@@ -1,17 +1,20 @@
 import React, { useState }  from 'react'
 import { AgGridReact } from 'ag-grid-react';
+import DateFnsUtils from '@date-io/date-fns';
+import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
 
 import './App.css';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
 
 function App() {
-  const [todo, setTodo] = useState({desc: '', date: '', priority: ''});
+  const [todo, setTodo] = useState({desc: '', selectedDate: '', priority: ''});
   const [todos, setTodos] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const addTodo = (event) => {
     setTodos([...todos, todo]);
-    setTodo({desc: '', date: '', priority: ''});
+    setTodo({desc: '', selectedDate: '', priority: ''});
   }
 
   const inputChanged = (event) => {
@@ -20,14 +23,22 @@ function App() {
 
   const columns = [
     { field: 'desc', sortable: true, filter: true },
-    { field: 'date', sortable: true, filter: true },
+    { field: 'selectedDate', sortable: true, filter: true },
     { field: 'priority', sortable: true, filter: true },
   ]
+
+ /* const handleDateChange = (date) => {
+    setSelectedDate(date);
+  }*/
+
+  // <DatePicker value={selectedDate} onChange={date => Date.toDateString(setSelectedDate(date))} />
 
   return (
     <div className="App">
       <input name="desc" value={todo.desc} onChange={inputChanged}/>
-      <input name="date" value={todo.date} onChange={inputChanged}/>
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <DatePicker value={selectedDate} onChange={date => setSelectedDate(date)} />
+      </MuiPickersUtilsProvider>
       <input name="priority" value={todo.priority} onChange={inputChanged}/>
       <button onClick={addTodo}>Add</button>
       <div className="ag-theme-material" style={{height: 400, width: 600, margin: 'auto'}}>
